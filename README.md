@@ -6,7 +6,9 @@ Highlight credit cards, emails, phone numbers, SSNs, and US bank numbers in a lo
 cat logs.txt | pii-lens
 ```
 
-Matches render in the terminal as bold white text on a red background. Under the payload, pii-lens prints how many high-risk secrets it found and which types they were.
+![pii-lens highlighting six secrets in a checkout log. Matches are bold white on red.](docs/terminal.png)
+
+Matches are bold white on a red background. Under the log, pii-lens prints the count:
 
 ```text
 [6] High-Risk Secrets Detected in Payload
