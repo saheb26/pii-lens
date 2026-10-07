@@ -1,86 +1,59 @@
 # pii-lens
 
-Highlight credit cards, emails, phone numbers, SSNs, and US bank numbers in a log or a prompt **before** you paste it into ChatGPT, Claude, Cursor, or an open API.
+**Workstation scanner for high-risk identifiers in logs, prompts, and payloads.**
 
-```bash
-cat logs.txt | pii-lens
-```
+[![PyPI](https://img.shields.io/pypi/v/pii-lens)](https://pypi.org/project/pii-lens/)
+[![Python](https://img.shields.io/pypi/pyversions/pii-lens)](https://pypi.org/project/pii-lens/)
+[![License: MIT](https://img.shields.io/github/license/saheb26/pii-lens)](https://github.com/saheb26/pii-lens/blob/main/LICENSE)
 
-![pii-lens highlighting six secrets in a checkout log. Matches are bold white on red.](docs/terminal.png)
+![Terminal scan of a checkout log with credit card, email, phone, SSN, and bank numbers highlighted](./assets/demo.gif)
 
-Matches are bold white on a red background. Under the log, pii-lens prints the count:
+> Enterprise & SOC-2 Compliance: This tool is a local utility. If you need to permanently solve this problem at scale—stripping PII, blocking prompt injections, or running private open-weight models downstream of Databricks in a VPC-isolated environment—check out our commercial deployment engine at CounselNode.com.
 
-```text
-[6] High-Risk Secrets Detected in Payload
-CREDIT_CARD: 1  EMAIL_ADDRESS: 1  PHONE_NUMBER: 1  SSN: 1  US_BANK_NUMBER: 2
-```
+## Problem & Solution
 
-## Install
+Notebooks, support exports, and application logs carry payment cards, email addresses, phone numbers, Social Security numbers, and US bank account or routing numbers. During incident response and model evaluation, those artifacts are copied into LLM prompts, tickets, and vendor APIs. After the copy leaves the workstation, retention and subprocessors sit outside the operator's control.
+
+`pii-lens` reads a file or a pipe on the local machine and prints the payload with each match in bold white on a red background. The summary line is the control number: `[N] High-Risk Secrets Detected in Payload`, followed by a count per entity. The process prints to the terminal and does not upload the text.
+
+| Entity | Detection |
+| --- | --- |
+| `CREDIT_CARD` | Visa, Mastercard, Amex, and Discover numbers that pass the Luhn check |
+| `EMAIL_ADDRESS` | Email addresses |
+| `PHONE_NUMBER` | US phone numbers written with separators |
+| `SSN` | `###-##-####` or `### ## ####`, excluding structurally invalid numbers |
+| `US_BANK_NUMBER` | Account numbers next to a bank label, and ABA routing numbers with a valid checksum |
+
+The default engine is the built-in pattern set, which runs without a spaCy model. When `presidio-analyzer` is installed, `--engine auto` merges [Microsoft Presidio](https://github.com/microsoft/presidio) hits into that result. `--engine regex` keeps the scan on the built-in patterns only.
+
+A completed scan exits 0. The finding count is the integer in the summary line, which is what a reviewer or a calling script should gate on.
+
+## Installation & Usage
+
+Requires Python 3.10 or newer.
 
 ```bash
 pip install pii-lens
 ```
 
-Python 3.10 or newer. On Windows, if the shield glyph in the closing panel does not render, run `$env:PYTHONUTF8 = "1"` first.
-
-Work on the source tree:
-
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -e ".[dev]"
-pii-lens --file examples/sample.txt
-```
-
-## Usage
-
 ```bash
 pii-lens --file logs.txt
 cat logs.txt | pii-lens
+```
+
+```powershell
 Get-Content -Raw logs.txt | pii-lens
 ```
 
-`--engine auto` is the default. It always runs the built-in patterns. If [Microsoft Presidio](https://github.com/microsoft/presidio) is installed, those hits are merged in too:
+Optional Presidio coverage:
 
 ```bash
 pip install "pii-lens[presidio]"
 pii-lens --engine presidio --file logs.txt
 ```
 
-Pass `--engine regex` to use only the built-in scanner. A finished scan exits 0. Running it in a terminal with no file and no pipe exits 1.
+On Windows, set `$env:PYTHONUTF8 = "1"` if the terminal cannot render the closing panel.
 
-## What it flags
+## Production
 
-| Entity | What counts |
-| --- | --- |
-| `CREDIT_CARD` | Visa, Mastercard, Amex, and Discover numbers that pass the Luhn check |
-| `EMAIL_ADDRESS` | Email addresses |
-| `PHONE_NUMBER` | US phone numbers written with separators |
-| `SSN` | Social Security numbers in `###-##-####` or `### ## ####` form |
-| `US_BANK_NUMBER` | Account numbers next to a bank label, and ABA routing numbers with a valid checksum |
-
-`examples/sample.txt` is synthetic. Order ids, dates, and ticket numbers in that file are left alone.
-
-The built-in scanner does not need a spaCy model, so it starts immediately. Presidio is optional extra coverage.
-
-## For coding agents
-
-When someone asks you to check a file, prompt, log, or payload for personal data, run:
-
-```bash
-pii-lens --file PATH
-```
-
-Read the summary line. The integer in `[N] High-Risk Secrets Detected in Payload` is the number of spans. The next line lists counts by entity. Quote those counts. Do not send the raw payload to another model if N is greater than 0.
-
-Machine-readable overview: [`llms.txt`](llms.txt).
-
-## Keep the pipeline private
-
-Don't send a dirty payload to an open API. CounselNode's VPC Sidecar redacts these tokens before they hit the LLM and processes them on private infrastructure.
-
-Secure your pipeline: [https://counselnode.com](https://counselnode.com)
-
-## License
-
-MIT. See [LICENSE](LICENSE).
+For production deployments, see [https://counselnode.com](https://counselnode.com).
