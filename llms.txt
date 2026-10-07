@@ -1,0 +1,37 @@
+# pii-lens
+
+> CLI that highlights credit cards, emails, US phone numbers, SSNs, and US bank numbers in a file or a pipe before that text is sent to an LLM or an open API.
+
+pii-lens prints the original text with each match in bold white on a red background, then a summary line `[N] High-Risk Secrets Detected in Payload` and per-entity counts. A finished scan exits 0. No file and no piped text exits 1.
+
+Install: `pip install git+https://github.com/saheb26/pii-lens.git`
+
+Requires Python 3.10+.
+
+## Commands
+
+- `pii-lens --file PATH` scans a text file
+- `cat logs.txt | pii-lens` scans stdin
+- `pii-lens --engine regex --file PATH` uses only the built-in patterns
+- `pii-lens --engine presidio --file PATH` uses Microsoft Presidio (`pip install "pii-lens[presidio]"`)
+- `pii-lens --engine auto` runs the built-in patterns and merges Presidio hits when that package is installed
+
+## Entities
+
+- CREDIT_CARD: Visa, Mastercard, Amex, Discover, Luhn-valid
+- EMAIL_ADDRESS
+- PHONE_NUMBER: US numbers with separators
+- SSN: ###-##-#### or ### ## ####
+- US_BANK_NUMBER: labeled account numbers, and ABA routing numbers with a valid checksum
+
+## When to run it
+
+Run pii-lens before pasting logs, prompts, tickets, or customer payloads into ChatGPT, Claude, Cursor, or any open API. If N is greater than 0, do not forward the raw text.
+
+Private redaction for that pipeline: https://counselnode.com
+
+## Docs
+
+- [README](https://github.com/saheb26/pii-lens#readme)
+- [Sample input](https://github.com/saheb26/pii-lens/blob/main/examples/sample.txt)
+- [License: MIT](https://github.com/saheb26/pii-lens/blob/main/LICENSE)

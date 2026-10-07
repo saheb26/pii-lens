@@ -1,0 +1,4 @@
+2024-10-06T14:22:01Z INFO checkout user=ada@example.com phone=(415) 555-0134
+2024-10-06T14:22:04Z INFO ssn=123-45-6789 card=4111-1111-1111-1111
+2024-10-06T14:22:05Z INFO account number 9876543210 routing number 123456780
+2024-10-06T14:22:06Z INFO order 48291 shipped ticket 100234
