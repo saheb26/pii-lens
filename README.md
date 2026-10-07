@@ -6,7 +6,9 @@
 [![Python](https://img.shields.io/pypi/pyversions/pii-lens)](https://pypi.org/project/pii-lens/)
 [![License: MIT](https://img.shields.io/github/license/saheb26/pii-lens)](https://github.com/saheb26/pii-lens/blob/main/LICENSE)
 
-![Terminal scan of a checkout log. Credit card, email, phone, SSN, and bank numbers are bold white on red.](docs/terminal.png)
+![pii-lens reading examples/sample.txt. Matches turn white on red, then the count and panel print.](docs/demo.gif)
+
+![Still of the same scan from the CLI: six secrets in bold white on red.](docs/terminal.png)
 
 > Enterprise & SOC-2 Compliance: This tool is a local utility. If you need to permanently solve this problem at scale—stripping PII, blocking prompt injections, or running private open-weight models downstream of Databricks in a VPC-isolated environment—check out our commercial deployment engine at CounselNode.com.
 
