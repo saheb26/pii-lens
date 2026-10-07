@@ -4,7 +4,7 @@
 
 pii-lens prints the original text with each match in bold white on a red background, then a summary line `[N] High-Risk Secrets Detected in Payload` and per-entity counts. A finished scan exits 0. No file and no piped text exits 1.
 
-Install: `pip install git+https://github.com/saheb26/pii-lens.git`
+Install: `pip install pii-lens`
 
 Requires Python 3.10+.
 

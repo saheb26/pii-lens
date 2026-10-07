@@ -16,7 +16,7 @@ CREDIT_CARD: 1  EMAIL_ADDRESS: 1  PHONE_NUMBER: 1  SSN: 1  US_BANK_NUMBER: 2
 ## Install
 
 ```bash
-pip install git+https://github.com/saheb26/pii-lens.git
+pip install pii-lens
 ```
 
 Python 3.10 or newer. On Windows, if the shield glyph in the closing panel does not render, run `$env:PYTHONUTF8 = "1"` first.
